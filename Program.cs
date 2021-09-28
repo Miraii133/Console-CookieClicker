@@ -15,7 +15,6 @@ namespace CookieClicker
 
     class Grandma : IBuyShop
     {
-        CookieData cookieData = new CookieData();
         public int Cost { get { return 15; } }
         private int quant;
         public int Quant
@@ -24,48 +23,39 @@ namespace CookieClicker
             get { return quant; }
         }
         public int amntPerBuy { get { return 1; } }
-    
-
         public void BuyMethod() {
-
-
-            int currentCookie = cookieData.CurrCke;
+            int currentCookie = CookieData.CurrCke;
             int newCookieAmnt = currentCookie - Cost;
-            cookieData.CurrCke = newCookieAmnt;
-            int currentQuant = Quant;
-            Console.WriteLine(currentQuant);
+            CookieData.CurrCke = newCookieAmnt;
+            Console.WriteLine("New cookie amount: " + CookieData.CurrCke);
+            int currentQuant = quant;
+            int newQuant = quant + amntPerBuy;
+            Quant = newQuant;
         
-            return;
-
-            
-            
-     
-       
-
     }
-        
         }
-    
 
-    class CookieData
+
+    static class CookieData
     {
-        private int currCke;
-        public int CurrCke
+        private static int currCke = 0;
+        public static int CurrCke
         {
             get { return currCke; }
             set { currCke = value; }
         }
+
     }
     class GenerateCookie 
     {
-        CookieData cookieData = new CookieData();
         public void createCookie()
         {
             int minCookieGen = 1;
-            int currentCookie = cookieData.CurrCke;
+           
+            int currentCookie = CookieData.CurrCke; 
             currentCookie = currentCookie + minCookieGen;
-            cookieData.CurrCke = currentCookie;
-            Console.WriteLine("Current total of Cookie: " + cookieData.CurrCke);
+            CookieData.CurrCke = currentCookie;
+            Console.WriteLine("Current total of Cookie: " + CookieData.CurrCke);
             return;
 
         }
