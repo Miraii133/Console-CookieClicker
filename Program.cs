@@ -6,8 +6,13 @@ namespace CookieClicker
     {
         public void BuyMethod();
         public int Cost { get; }
-        public int Quant { set; get; }
+        public static int Quant { set; get; }
         public int amntPerBuy { get; }
+
+    }
+
+    public interface ICheckQuant
+    {
 
     }
 
@@ -16,8 +21,8 @@ namespace CookieClicker
     class Grandma : IBuyShop
     {
         public int Cost { get { return 15; } }
-        private int quant;
-        public int Quant
+        private static int quant;
+        public static int Quant
         {
             set { quant = value; }
             get { return quant; }
@@ -25,14 +30,24 @@ namespace CookieClicker
         public int amntPerBuy { get { return 1; } }
         public void BuyMethod() {
             int currentCookie = CookieData.CurrCke;
-            int newCookieAmnt = currentCookie - Cost;
+            int newCookieAmnt;
+            if (currentCookie - Cost < 0)
+            {
+                newCookieAmnt = Cost - currentCookie;
+                int lackingAmnt = newCookieAmnt;
+                Console.WriteLine($"You have insufficient " +
+                    $"cookies! You need {lackingAmnt} more!");
+                return;
+            }
+            newCookieAmnt = currentCookie - Cost;
             CookieData.CurrCke = newCookieAmnt;
             Console.WriteLine("New cookie amount: " + CookieData.CurrCke);
             int currentQuant = quant;
             int newQuant = quant + amntPerBuy;
             Quant = newQuant;
-        
-    }
+            Console.WriteLine("New amount of Grandma: " + Quant);
+
+        }
         }
 
 
@@ -51,11 +66,11 @@ namespace CookieClicker
         public void createCookie()
         {
             int minCookieGen = 1;
-           
             int currentCookie = CookieData.CurrCke; 
             currentCookie = currentCookie + minCookieGen;
             CookieData.CurrCke = currentCookie;
             Console.WriteLine("Current total of Cookie: " + CookieData.CurrCke);
+            
             return;
 
         }
