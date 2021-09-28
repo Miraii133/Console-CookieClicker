@@ -5,23 +5,39 @@ namespace CookieClicker
     public interface IBuyShop
     {
         public void BuyMethod();
-        public int cost { get; }
-        public int quant { get; set; }
+        public int Cost { get; }
+        public int Quant { set; get; }
+        public int amntPerBuy { get; }
 
     }
 
 
 
-     class Grandma : IBuyShop
-    { 
+    class Grandma : IBuyShop
+    {
         CookieData cookieData = new CookieData();
-        public int cost { get { return 15; } }
+        public int Cost { get { return 15; } }
+        private int quant;
+        public int Quant
+        {
+            set { quant = value; }
+            get { return quant; }
+        }
+        public int amntPerBuy { get { return 1; } }
+    
 
         public void BuyMethod() {
 
+
             int currentCookie = cookieData.CurrCke;
-            int newCookieAmnt = currentCookie - cost;
+            int newCookieAmnt = currentCookie - Cost;
             cookieData.CurrCke = newCookieAmnt;
+            int currentQuant = Quant;
+            Console.WriteLine(currentQuant);
+        
+            return;
+
+            
             
      
        
