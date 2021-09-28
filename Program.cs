@@ -5,54 +5,71 @@ namespace CookieClicker
     public interface IBuyShop
     {
         public void BuyMethod();
-        public int Cost { get; }
-        public static int Quant { set; get; }
+        public static int Cost { get; set; }
+        public static int Quant { get; set; }
         public int amntPerBuy { get; }
 
     }
 
     public interface ICheckQuant
     {
-
+        public int CheckQuant();
     }
 
 
 
-    class Grandma : IBuyShop
+    class Grandma : IBuyShop, ICheckQuant
     {
-        public int Cost { get { return 15; } }
+        private static int cost = 15;
+        public static int Cost
+        {
+            set { cost = value; }
+            get { return cost; }
+        }
+ 
         private static int quant;
         public static int Quant
         {
             set { quant = value; }
             get { return quant; }
         }
+
+        //amntPerBuy refers to the amount of Grandma you can buy per choice
         public int amntPerBuy { get { return 1; } }
         public void BuyMethod() {
             int currentCookie = CookieData.CurrCke;
             int newCookieAmnt;
-            if (currentCookie - Cost < 0)
+            if (currentCookie - cost < 0)
             {
-                newCookieAmnt = Cost - currentCookie;
+                newCookieAmnt = cost - currentCookie;
                 int lackingAmnt = newCookieAmnt;
                 Console.WriteLine($"You have insufficient " +
                     $"cookies! You need {lackingAmnt} more!");
                 return;
             }
-            newCookieAmnt = currentCookie - Cost;
+            newCookieAmnt = currentCookie - cost;
             CookieData.CurrCke = newCookieAmnt;
             Console.WriteLine("New cookie amount: " + CookieData.CurrCke);
-            int currentQuant = quant;
             int newQuant = quant + amntPerBuy;
+            int newCost = cost * 2;
+            Cost = newCost;
             Quant = newQuant;
+            Console.WriteLine("New Grandma cost: " + Cost);
             Console.WriteLine("New amount of Grandma: " + Quant);
 
         }
+
+        public int CheckQuant()
+        {
+            return Quant;
+        }
         }
 
 
+    // made static so instances of other classes can use CurrCke
     static class CookieData
     {
+
         private static int currCke = 0;
         public static int CurrCke
         {
@@ -63,16 +80,35 @@ namespace CookieClicker
     }
     class GenerateCookie 
     {
-        public void createCookie()
+        int minCookieGen = 1;
+        public void CreateCookie()
         {
-            int minCookieGen = 1;
-            int currentCookie = CookieData.CurrCke; 
-            currentCookie = currentCookie + minCookieGen;
-            CookieData.CurrCke = currentCookie;
+           
+            int currentCookie = CookieData.CurrCke;
+            int newCurrentCookie;
+            Console.Clear();
+            if (incremGrandma() <= 0)
+            {
+                newCurrentCookie = currentCookie + minCookieGen;
+                CookieData.CurrCke = newCurrentCookie;
+                Console.WriteLine("Current total of Cookie: " + CookieData.CurrCke);
+                return;
+            }
+            newCurrentCookie = incremGrandma() + currentCookie;
+            CookieData.CurrCke = newCurrentCookie;
             Console.WriteLine("Current total of Cookie: " + CookieData.CurrCke);
-            
             return;
-
+        }
+        public int incremGrandma()
+        {
+            Grandma grma = new Grandma();
+            int incremCookie;
+            if (grma.CheckQuant() < 0)
+            {
+                return 0;
+            }
+            incremCookie = grma.CheckQuant() * minCookieGen;
+            return incremCookie;
         }
 
 
@@ -93,7 +129,7 @@ namespace CookieClicker
                     }
                 case 1:
                     {
-                        gen_Cookie.createCookie();
+                        gen_Cookie.CreateCookie();
                         return;
                     }
                 case 2:
@@ -104,6 +140,7 @@ namespace CookieClicker
                     }
                 default:
                     {
+                        Console.WriteLine("Incorrect command!");
                         break;
                     }
                
@@ -147,8 +184,12 @@ namespace CookieClicker
             while (game_Stat.Check_Status())
             {
                 Console.Write("Choice: ");
-                int choice = Convert.ToInt32(Console.ReadLine());
+                int choice;
+  
+                     choice = Convert.ToInt32(Console.ReadLine());
+        
                 check_Choice.CheckChc(choice, game_Stat, gen_Cookie, grma);
+                
             }
 
 
