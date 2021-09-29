@@ -28,7 +28,7 @@ namespace CookieClicker
             get { return cost; }
         }
  
-        private static int quant = 1;
+        private static int quant = 0;
         public static int Quant
         {
             set { quant = value; }
@@ -68,7 +68,7 @@ namespace CookieClicker
     class Farm : IBuyShop, ICheckQuant
     {
         string helperName = "Farm";
-        private static int cost = 50;
+        private static int cost = 10;
         public static int Cost
         {
             set { cost = value; }
@@ -152,41 +152,22 @@ namespace CookieClicker
 
             int currentCookie = CookieData.CurrCke;
             int newCurrentCookie;
-
-
+           
             newCurrentCookie = currentCookie + minCookieGen;
             CookieData.CurrCke = newCurrentCookie;
-            // Console.WriteLine("Current total of Cookie: " + CookieData.CurrCke);
-
-            // if there are no grandmas bought, only 1 will be produced
-            /*if (incremGrandma() <= 0)
-            {
-                minCookieGen = 1;
-                newCurrentCookie = currentCookie + minCookieGen;
-                CookieData.CurrCke = newCurrentCookie;
-                Console.WriteLine("Current total of Cookie: " + CookieData.CurrCke);
-            }*/
-            // have grandma, 1 will be produced until another one will be bought
             if (incremGrandma() >= 1)
             {
-                newCurrentCookie = incremGrandma() + currentCookie;
+                newCurrentCookie = incremGrandma() + newCurrentCookie;
                 CookieData.CurrCke = newCurrentCookie;
+                Console.WriteLine("Grandma produce: " + incremGrandma());
             }
 
-            // no farm, no produce cookies
-            /*if (incremFarm() <= 0)
-            {
-                minCookieGen = 0;
-                newCurrentCookie = currentCookie + minCookieGen;
-                CookieData.CurrCke = CookieData.CurrCke + newCurrentCookie;
-                Console.WriteLine("Current totat of Cookie Farm: " + CookieData.CurrCke);
-            }*/
             // have farm, 3 cookies
-            else if (incremFarm() >= 1)
+            if (incremFarm() >= 1)
             {
-                minCookieGen = 3;
-                newCurrentCookie = incremFarm() + currentCookie;
-                CookieData.CurrCke = newCurrentCookie; ;
+                newCurrentCookie = incremFarm() + newCurrentCookie;
+                CookieData.CurrCke = newCurrentCookie;
+                Console.WriteLine("Farm produce: " + incremFarm());
 
             }
             Console.WriteLine($"Current total of Cookie: {CookieData.CurrCke}");
