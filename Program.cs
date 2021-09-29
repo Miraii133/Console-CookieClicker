@@ -27,7 +27,7 @@ namespace CookieClicker
             get { return cost; }
         }
  
-        private static int quant;
+        private static int quant = 1;
         public static int Quant
         {
             set { quant = value; }
@@ -41,8 +41,8 @@ namespace CookieClicker
             int newCookieAmnt;
             if (currentCookie - cost < 0)
             {
-                newCookieAmnt = cost - currentCookie;
-                int lackingAmnt = newCookieAmnt;
+                int lackingAmnt = cost - currentCookie;
+                
                 Console.WriteLine($"You have insufficient " +
                     $"cookies! You need {lackingAmnt} more!");
                 return;
@@ -64,7 +64,65 @@ namespace CookieClicker
             return Quant;
         }
         }
+    class Farm : IBuyShop, ICheckQuant
+    {
+        private static int cost = 1;
+        public static int Cost
+        {
+            set { cost = value; }
+            get { return cost; }
+        }
 
+        private static int quant = 1;
+        public static int Quant
+        {
+            set { quant = value; }
+            get { return quant; }
+        }
+
+        //amntPerBuy refers to the amount of Grandma you can buy per choice
+        public int amntPerBuy { get { return 1; } }
+        public void BuyMethod()
+        {
+            int currentCookie = CookieData.CurrCke;
+            int newCookieAmnt;
+            if (currentCookie - cost < 0)
+            {
+                int lackingAmnt = cost - currentCookie;
+
+                Console.WriteLine($"You have insufficient " +
+                    $"cookies! You need {lackingAmnt} more!");
+                return;
+            }
+            newCookieAmnt = currentCookie - cost;
+            CookieData.CurrCke = newCookieAmnt;
+            Console.WriteLine("New cookie amount: " + CookieData.CurrCke);
+            int newQuant = quant + amntPerBuy;
+            int newCost = cost * 2;
+            Cost = newCost;
+            Quant = newQuant;
+            Console.WriteLine("New Grandma cost: " + Cost);
+            Console.WriteLine("New amount of Grandma: " + Quant);
+
+        }
+
+        public int CheckQuant()
+        {
+            return Quant;
+        }
+    }
+
+
+    class CheckHelperQuant
+    {
+        public void getHelperQuant()
+        {
+            Grandma grma = new Grandma();
+            Console.WriteLine("Current Grandma amount: "
+                + grma.CheckQuant());
+        }
+
+    }
 
     // made static so instances of other classes can use CurrCke
     static class CookieData
@@ -118,7 +176,7 @@ namespace CookieClicker
     class CheckChoice
     {
         public void CheckChc(int choice, 
-            GameStat game_Stat, GenerateCookie gen_Cookie, Grandma grma)
+            GameStat game_Stat, GenerateCookie gen_Cookie, Grandma grma, CheckHelperQuant checkHelp_Quant)
         {
             switch (choice)
             {
@@ -133,6 +191,11 @@ namespace CookieClicker
                         return;
                     }
                 case 2:
+                    {
+                        checkHelp_Quant.getHelperQuant();
+                        return;
+                    }
+                case 3:
                     {
                         grma.BuyMethod();
                         break;
@@ -177,6 +240,7 @@ namespace CookieClicker
             GameStat game_Stat = new GameStat();
             GenerateCookie gen_Cookie = new GenerateCookie();
             Grandma grma = new Grandma();
+            CheckHelperQuant checkHelp_Quant = new CheckHelperQuant();
 
             game_Stat.StartGame();
 
@@ -185,10 +249,17 @@ namespace CookieClicker
             {
                 Console.Write("Choice: ");
                 int choice;
-  
-                     choice = Convert.ToInt32(Console.ReadLine());
+                try
+                {
+                    choice = Convert.ToInt32(Console.ReadLine());
+                    check_Choice.CheckChc(choice, game_Stat, gen_Cookie, grma, checkHelp_Quant);
+                }
+                catch
+                {
+                    Console.WriteLine("Only integers are accepted on the choices!");
+                }
         
-                check_Choice.CheckChc(choice, game_Stat, gen_Cookie, grma);
+               
                 
             }
 
