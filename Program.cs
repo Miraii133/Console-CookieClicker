@@ -20,6 +20,7 @@ namespace CookieClicker
 
     class Grandma : IBuyShop, ICheckQuant
     {
+        string helperName = "Grandma";
         private static int cost = 15;
         public static int Cost
         {
@@ -54,8 +55,8 @@ namespace CookieClicker
             int newCost = cost * 2;
             Cost = newCost;
             Quant = newQuant;
-            Console.WriteLine("New Grandma cost: " + Cost);
-            Console.WriteLine("New amount of Grandma: " + Quant);
+            Console.WriteLine($"New cost of {helperName}: " + Cost);
+            Console.WriteLine($"New amount of {helperName}: " + Quant);
 
         }
 
@@ -66,14 +67,15 @@ namespace CookieClicker
         }
     class Farm : IBuyShop, ICheckQuant
     {
-        private static int cost = 1;
+        string helperName = "Farm";
+        private static int cost = 50;
         public static int Cost
         {
             set { cost = value; }
             get { return cost; }
         }
 
-        private static int quant = 1;
+        private static int quant = 0;
         public static int Quant
         {
             set { quant = value; }
@@ -98,11 +100,11 @@ namespace CookieClicker
             CookieData.CurrCke = newCookieAmnt;
             Console.WriteLine("New cookie amount: " + CookieData.CurrCke);
             int newQuant = quant + amntPerBuy;
-            int newCost = cost * 2;
+            int newCost = cost * 3;
             Cost = newCost;
             Quant = newQuant;
-            Console.WriteLine("New Grandma cost: " + Cost);
-            Console.WriteLine("New amount of Grandma: " + Quant);
+            Console.WriteLine($"New cost of {helperName}: " + Cost);
+            Console.WriteLine($"New amount of {helperName}: " + Quant);
 
         }
 
@@ -120,6 +122,10 @@ namespace CookieClicker
             Grandma grma = new Grandma();
             Console.WriteLine("Current Grandma amount: "
                 + grma.CheckQuant());
+
+            Farm farm = new Farm();
+            Console.WriteLine("Current Farm amount: "
+                + farm.CheckQuant());
         }
 
     }
@@ -141,31 +147,74 @@ namespace CookieClicker
         int minCookieGen = 1;
         public void CreateCookie()
         {
-           
+
+            Console.Clear();
+
             int currentCookie = CookieData.CurrCke;
             int newCurrentCookie;
-            Console.Clear();
-            if (incremGrandma() <= 0)
+
+
+            newCurrentCookie = currentCookie + minCookieGen;
+            CookieData.CurrCke = newCurrentCookie;
+            // Console.WriteLine("Current total of Cookie: " + CookieData.CurrCke);
+
+            // if there are no grandmas bought, only 1 will be produced
+            /*if (incremGrandma() <= 0)
             {
+                minCookieGen = 1;
                 newCurrentCookie = currentCookie + minCookieGen;
                 CookieData.CurrCke = newCurrentCookie;
                 Console.WriteLine("Current total of Cookie: " + CookieData.CurrCke);
-                return;
+            }*/
+            // have grandma, 1 will be produced until another one will be bought
+            if (incremGrandma() >= 1)
+            {
+                newCurrentCookie = incremGrandma() + currentCookie;
+                CookieData.CurrCke = newCurrentCookie;
             }
-            newCurrentCookie = incremGrandma() + currentCookie;
-            CookieData.CurrCke = newCurrentCookie;
-            Console.WriteLine("Current total of Cookie: " + CookieData.CurrCke);
-            return;
+
+            // no farm, no produce cookies
+            /*if (incremFarm() <= 0)
+            {
+                minCookieGen = 0;
+                newCurrentCookie = currentCookie + minCookieGen;
+                CookieData.CurrCke = CookieData.CurrCke + newCurrentCookie;
+                Console.WriteLine("Current totat of Cookie Farm: " + CookieData.CurrCke);
+            }*/
+            // have farm, 3 cookies
+            else if (incremFarm() >= 1)
+            {
+                minCookieGen = 3;
+                newCurrentCookie = incremFarm() + currentCookie;
+                CookieData.CurrCke = newCurrentCookie; ;
+
+            }
+            Console.WriteLine($"Current total of Cookie: {CookieData.CurrCke}");
+            Console.WriteLine($"Cookies Per Choice: {incremGrandma() + incremFarm()}");
         }
         public int incremGrandma()
         {
             Grandma grma = new Grandma();
             int incremCookie;
-            if (grma.CheckQuant() < 0)
+            if (grma.CheckQuant() <= 0)
             {
                 return 0;
             }
             incremCookie = grma.CheckQuant() * minCookieGen;
+            return incremCookie;
+
+        }
+        public int incremFarm()
+        {
+            Farm farm = new Farm();
+            int incremCookie;
+            int minCookieGen = 3;
+            if (farm.CheckQuant() <= 0)
+            {
+                return 0;
+               
+            }
+            incremCookie = farm.CheckQuant() * minCookieGen;
             return incremCookie;
         }
 
@@ -176,7 +225,8 @@ namespace CookieClicker
     class CheckChoice
     {
         public void CheckChc(int choice, 
-            GameStat game_Stat, GenerateCookie gen_Cookie, Grandma grma, CheckHelperQuant checkHelp_Quant)
+            GameStat game_Stat, GenerateCookie gen_Cookie, 
+            Grandma grma, Farm farm, CheckHelperQuant checkHelp_Quant)
         {
             switch (choice)
             {
@@ -198,8 +248,12 @@ namespace CookieClicker
                 case 3:
                     {
                         grma.BuyMethod();
-                        break;
-
+                        return;
+                    }
+                case 4:
+                    {
+                        farm.BuyMethod();
+                        return;
                     }
                 default:
                     {
@@ -240,7 +294,9 @@ namespace CookieClicker
             GameStat game_Stat = new GameStat();
             GenerateCookie gen_Cookie = new GenerateCookie();
             Grandma grma = new Grandma();
+            Farm farm = new Farm();
             CheckHelperQuant checkHelp_Quant = new CheckHelperQuant();
+            
 
             game_Stat.StartGame();
 
@@ -252,7 +308,8 @@ namespace CookieClicker
                 try
                 {
                     choice = Convert.ToInt32(Console.ReadLine());
-                    check_Choice.CheckChc(choice, game_Stat, gen_Cookie, grma, checkHelp_Quant);
+                    check_Choice.CheckChc(choice, game_Stat, gen_Cookie, grma,
+                                          farm, checkHelp_Quant);
                 }
                 catch
                 {
