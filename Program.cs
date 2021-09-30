@@ -23,14 +23,23 @@ namespace CookieClicker
 
     class GameProperties
     {
-        protected string gameTitle = "Cookie Clicker";
-        protected string gameVersion = "V1";
-        protected string gameAuthor = "Miraii_";
+        public string gameTitle = "Cookie Clicker";
+        public string gameVersion = "V1";
+        public string gameAuthor = "Miraii_";
+    }
+
+    class MiscTexts
+    {
         private string choiceText = @$"[0] Stop game || [1] Generate Cookie || [2] Check helper quantity ||
 [3] Check Next Helper Cost || [4] Buy Grandma || [5] Buy Farm ||";
+        private string errorIntText = "Only integers are accepted on the choices!";
         public string dispChoiceText()
         {
             return choiceText;
+        }
+        public string dispErrorText()
+        {
+            return errorIntText;
         }
     }
 
@@ -69,13 +78,13 @@ namespace CookieClicker
             }
             newCookieAmnt = currentCookie - cost;
             CookieData.CurrCke = newCookieAmnt;
-            Console.WriteLine("New cookie amount: " + CookieData.CurrCke);
             int newQuant = quant + amntPerBuy;
             int newCost = cost * 2;
             Cost = newCost;
             Quant = newQuant;
             Console.WriteLine($"New cost of {helperName}: " + Cost);
             Console.WriteLine($"New amount of {helperName}: " + Quant);
+            Console.WriteLine("New cookie amount: " + CookieData.CurrCke);
 
         }
 
@@ -120,7 +129,7 @@ namespace CookieClicker
             }
             newCookieAmnt = currentCookie - cost;
             CookieData.CurrCke = newCookieAmnt;
-            Console.WriteLine("New cookie amount: " + CookieData.CurrCke);
+            Console.WriteLine($"New cookie amount: {CookieData.CurrCke}");
             int newQuant = quant + amntPerBuy;
             int newCost = cost * 3;
             Cost = newCost;
@@ -146,7 +155,7 @@ namespace CookieClicker
         public void getHelperQuant()
         {
             Grandma grma = new Grandma();
-            Console.WriteLine($"Current Grandma amnount: {grma.CheckQuant()}");
+            Console.WriteLine($"Current Grandma amount: {grma.CheckQuant()}");
 
             Farm farm = new Farm();
             Console.WriteLine($"Current Farm amount: {farm.CheckQuant()}");
@@ -291,14 +300,16 @@ namespace CookieClicker
         private bool isRunning;
         public void StartGame()
         {
+            GameProperties gameProp = new GameProperties();
             isRunning = true;
-            Console.WriteLine("Cookie Clicker is now running");
+            Console.WriteLine($"{gameProp.gameTitle} is now running");
         }
         public void StopGame()
         {
+            GameProperties gameProp = new GameProperties();
             isRunning = false;
             Check_Status();
-            Console.WriteLine("Cookie Clicker is now stopped");
+            Console.WriteLine($"{gameProp.gameTitle} is now stopped");
         }
         public bool Check_Status()
         {
@@ -317,14 +328,14 @@ namespace CookieClicker
             Farm farm = new Farm();
             CheckHelperQuant checkHelp_Quant = new CheckHelperQuant();
             CheckHelperCost checkHelp_Cost = new CheckHelperCost();
-            GameProperties gameProperty = new GameProperties();
+            MiscTexts miscTexts = new MiscTexts();
 
             game_Stat.StartGame();
 
 
             while (game_Stat.Check_Status())
             {
-                Console.WriteLine(gameProperty.dispChoiceText());
+                Console.WriteLine(miscTexts.dispChoiceText());
                 int choice;
                 try
                 {
@@ -334,7 +345,7 @@ namespace CookieClicker
                 }
                 catch
                 {
-                    Console.WriteLine("Only integers are accepted on the choices!");
+                    Console.WriteLine(miscTexts.dispErrorText());
                 }
         
                
