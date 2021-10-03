@@ -16,6 +16,11 @@ namespace CookieClicker
     {
         public int CheckCost();
     }
+    public interface IGenMultiplier
+    {
+        public int CookieMultiplier();
+    }
+
 
 
     class GameProperties
@@ -27,7 +32,7 @@ namespace CookieClicker
 
     class MiscTexts
     {
-        private string choiceText = @$"[0] Stop game || [1] Generate Cookie || [2] Check helper quantity ||
+        private string choiceText = @"[0] Stop game || [1] Generate Cookie || [2] Check helper quantity ||
 [3] Check Next Helper Cost || [4] Buy Grandma || [5] Buy Farm || [6] Buy Mines";
         private string errorIntText = "Only integers are accepted on the choices!";
         public string dispChoiceText()
@@ -43,7 +48,7 @@ namespace CookieClicker
 
 
 
-    class Grandma : IBuyShop, ICheckQuant, ICheckCost
+    class Grandma : IBuyShop, ICheckQuant, ICheckCost, IGenMultiplier
     {
         public string helperName = "Grandma";
         private static int cost = 15;
@@ -73,7 +78,7 @@ namespace CookieClicker
             quant = newQuant;
             Console.WriteLine($"New cost of {helperName}: " + cost);
             Console.WriteLine($"New amount of {helperName}: " + quant);
-            Console.WriteLine("New cookie amount: " + CookieData.CurrCke);
+            Console.WriteLine($"New cookie amount: {CookieData.CurrCke}");
 
         }
 
@@ -85,15 +90,31 @@ namespace CookieClicker
         {
             return cost;
         }
+        public int CookieMultiplier()
+        {
+            if (quant == 10)
+            {
+                // 10
+                // 25
+                // 40
+                // 60
+            }
+            return 0;
+        }
+        
     }
-    class Farm : IBuyShop, ICheckQuant, ICheckCost
+    class Farm : IBuyShop, ICheckQuant, ICheckCost, IGenMultiplier
     {
         public string helperName = "Farm";
         private static int cost = 50;
         private static int costMultiplier = 2;
         private static int quant = 0;
         private static int minCookieGen = 10;
-        public int MinCookieGen { get { return minCookieGen; } }
+        public int MinCookieGen
+        {
+            get { return minCookieGen; }
+            set { minCookieGen = value; }
+        }
 
         //amntPerBuy refers to the amount of Grandma you can buy per choice
         public int amntPerBuy { get { return 1; } }
@@ -128,9 +149,14 @@ namespace CookieClicker
         {
             return cost;
         }
+        public int CookieMultiplier()
+        {
+
+            return 0;
+        }
     }
 
-    class Mines : IBuyShop, ICheckQuant, ICheckCost
+    class Mines : IBuyShop, ICheckQuant, ICheckCost, IGenMultiplier
     {
         public string helperName = "Mines";
         private static int cost = 100;
@@ -154,13 +180,13 @@ namespace CookieClicker
             }
             newCookieAmnt = currentCookie - cost;
             CookieData.CurrCke = newCookieAmnt;
-            Console.WriteLine($"New cookie amount: {CookieData.CurrCke}");
             int newQuant = quant + amntPerBuy;
             int newCost = cost * costMultiplier;
             cost = newCost;
             quant = newQuant;
             Console.WriteLine($"New cost of {helperName}: " + cost);
             Console.WriteLine($"New amount of {helperName}: " + quant);
+            Console.WriteLine($"New cookie amount: {CookieData.CurrCke}");
 
         }
 
@@ -171,6 +197,11 @@ namespace CookieClicker
         public int CheckCost()
         {
             return cost;
+        }
+        public int CookieMultiplier()
+        {
+     
+            return 0;
         }
     }
 
