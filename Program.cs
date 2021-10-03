@@ -14,7 +14,7 @@ namespace CookieClicker
     }
     public interface ICheckCost
     {
-        public int CheckCost();
+        public float CheckCost();
     }
     public interface IGenMultiplier
     {
@@ -51,20 +51,20 @@ namespace CookieClicker
     class Grandma : IBuyShop, ICheckQuant, ICheckCost, IGenMultiplier
     {
         public string helperName = "Grandma";
-        private static int cost = 15;
-        private static int costMultiplier = 2;
+        private static float cost = 15;
+        private static float costMultiplier = 2;
         private static int quant = 0;
-        private static int minCookieGen = 2;
-        public int MinCookieGen { get { return minCookieGen; } }
+        private static float minCookieGen = 2;
+        public float MinCookieGen { get { return minCookieGen; } }
 
         //amntPerBuy refers to the amount of Grandma you can buy per choice
         public int amntPerBuy { get { return 1; } }
         public void BuyMethod() {
-            int currentCookie = CookieData.CurrCke;
-            int newCookieAmnt;
+            float currentCookie = CookieData.CurrCke;
+            float newCookieAmnt;
             if (currentCookie - cost < 0)
             {
-                int lackingAmnt = cost - currentCookie;
+                float lackingAmnt = cost - currentCookie;
 
                 Console.WriteLine($"You have insufficient " +
                     $"cookies! You need {lackingAmnt} more!");
@@ -73,7 +73,7 @@ namespace CookieClicker
             newCookieAmnt = currentCookie - cost;
             CookieData.CurrCke = newCookieAmnt;
             int newQuant = quant + amntPerBuy;
-            int newCost = cost * costMultiplier;
+            float newCost = cost * costMultiplier;
             cost = newCost;
             quant = newQuant;
             Console.WriteLine($"New cost of {helperName}: " + cost);
@@ -86,7 +86,7 @@ namespace CookieClicker
         {
             return quant;
         }
-        public int CheckCost()
+        public float CheckCost()
         {
             return cost;
         }
@@ -106,11 +106,11 @@ namespace CookieClicker
     class Farm : IBuyShop, ICheckQuant, ICheckCost, IGenMultiplier
     {
         public string helperName = "Farm";
-        private static int cost = 50;
-        private static int costMultiplier = 2;
+        private static float cost = 50;
+        private static float costMultiplier = 2;
         private static int quant = 0;
-        private static int minCookieGen = 10;
-        public int MinCookieGen
+        private static float minCookieGen = 10;
+        public float MinCookieGen
         {
             get { return minCookieGen; }
             set { minCookieGen = value; }
@@ -120,11 +120,11 @@ namespace CookieClicker
         public int amntPerBuy { get { return 1; } }
         public void BuyMethod()
         {
-            int currentCookie = CookieData.CurrCke;
-            int newCookieAmnt;
+            float currentCookie = CookieData.CurrCke;
+            float newCookieAmnt;
             if (currentCookie - cost < 0)
             {
-                int lackingAmnt = cost - currentCookie;
+                float lackingAmnt = cost - currentCookie;
                 Console.WriteLine($"You have insufficient " +
                     $"cookies! You need {lackingAmnt} more!");
                 return;
@@ -132,7 +132,7 @@ namespace CookieClicker
             newCookieAmnt = currentCookie - cost;
             CookieData.CurrCke = newCookieAmnt;
             int newQuant = quant + amntPerBuy;
-            int newCost = cost * costMultiplier;
+            float newCost = cost * costMultiplier;
             cost = newCost;
             quant = newQuant;
             Console.WriteLine($"New cost of {helperName}: " + cost);
@@ -145,7 +145,7 @@ namespace CookieClicker
         {
             return quant;
         }
-        public int CheckCost()
+        public float CheckCost()
         {
             return cost;
         }
@@ -159,21 +159,21 @@ namespace CookieClicker
     class Mines : IBuyShop, ICheckQuant, ICheckCost, IGenMultiplier
     {
         public string helperName = "Mines";
-        private static int cost = 100;
-        private static int costMultiplier = 5;
+        private static float cost = 100;
+        private static float costMultiplier = 5;
         private static int quant = 0;
-        private static int minCookieGen = 10;
+        private static float minCookieGen = 10;
 
-        public int MinCookieGen { get { return minCookieGen; } }
+        public float MinCookieGen { get { return minCookieGen; } }
         //amntPerBuy refers to the amount of Grandma you can buy per choice
         public int amntPerBuy { get { return 1; } }
         public void BuyMethod()
         {
-            int currentCookie = CookieData.CurrCke;
-            int newCookieAmnt;
+            float currentCookie = CookieData.CurrCke;
+            float newCookieAmnt;
             if (currentCookie - cost < 0)
             {
-                int lackingAmnt = cost - currentCookie;
+                float lackingAmnt = cost - currentCookie;
                 Console.WriteLine($"You have insufficient " +
                     $"cookies! You need {lackingAmnt} more!");
                 return;
@@ -181,7 +181,7 @@ namespace CookieClicker
             newCookieAmnt = currentCookie - cost;
             CookieData.CurrCke = newCookieAmnt;
             int newQuant = quant + amntPerBuy;
-            int newCost = cost * costMultiplier;
+            float newCost = cost * costMultiplier;
             cost = newCost;
             quant = newQuant;
             Console.WriteLine($"New cost of {helperName}: " + cost);
@@ -194,7 +194,7 @@ namespace CookieClicker
         {
             return quant;
         }
-        public int CheckCost()
+        public float CheckCost()
         {
             return cost;
         }
@@ -239,8 +239,8 @@ namespace CookieClicker
     static class CookieData
     {
 
-        private static int currCke = 0;
-        public static int CurrCke
+        private static float currCke = 0;
+        public static float CurrCke
         {
             get { return currCke; }
             set { currCke = value; }
@@ -249,14 +249,14 @@ namespace CookieClicker
     }
     class GenerateCookie 
     {
-        int minCookieGen = 1;
+        float minCookieGen = 1.5F;
         public void CreateCookie()
         {
 
             Console.Clear();
 
-            int currentCookie = CookieData.CurrCke;
-            int newCurrentCookie;
+            float currentCookie = CookieData.CurrCke;
+            float newCurrentCookie;
            
             newCurrentCookie = currentCookie + minCookieGen;
             CookieData.CurrCke = newCurrentCookie;
@@ -282,10 +282,10 @@ namespace CookieClicker
             Console.WriteLine($"Current total of Cookie: {CookieData.CurrCke}");
             Console.WriteLine($"Cookies generated from Helpers: {incremGrandma() + incremFarm() + incremMines()}");
         }
-        public int incremGrandma()
+        public float incremGrandma()
         {
             Grandma grma = new Grandma();
-            int incremCookie;
+            float incremCookie;
             if (grma.CheckQuant() <= 0)
             {
                 return 0;
@@ -294,10 +294,10 @@ namespace CookieClicker
             return incremCookie;
 
         }
-        public int incremFarm()
+        public float incremFarm()
         {
             Farm farm = new Farm();
-            int incremCookie;
+            float incremCookie;
             if (farm.CheckQuant() <= 0)
             {
                 return 0;
@@ -305,10 +305,10 @@ namespace CookieClicker
             incremCookie = farm.CheckQuant() * farm.MinCookieGen;
             return incremCookie;
         }
-        public int incremMines()
+        public float incremMines()
         {
             Mines mines = new Mines();
-            int incremCookie;
+            float incremCookie;
             if (mines.CheckQuant() <= 0)
             {
                 return 0;
@@ -321,7 +321,7 @@ namespace CookieClicker
     class CanBuyHelper
     {
 
-        int currentCookie;
+        float currentCookie;
         
         public void CheckCanBuy()
         {
@@ -444,7 +444,7 @@ namespace CookieClicker
         public void goalReached()
         {
             int goalCookieAmnt = 1000000;
-            int currentCookie = CookieData.CurrCke;
+            float currentCookie = CookieData.CurrCke;
             if (currentCookie >= goalCookieAmnt)
             {
                 Console.WriteLine("You have reached 1 million cookies! Congratulations!");
