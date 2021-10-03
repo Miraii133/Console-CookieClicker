@@ -59,13 +59,13 @@ namespace CookieClicker
 
         //amntPerBuy refers to the amount of Grandma you can buy per choice
         public int amntPerBuy { get { return 1; } }
-        public void BuyMethod() {
+        public void BuyMethod()
+        {
             float currentCookie = CookieData.CurrCke;
             float newCookieAmnt;
             if (currentCookie - cost < 0)
             {
                 float lackingAmnt = cost - currentCookie;
-
                 Console.WriteLine($"You have insufficient " +
                     $"cookies! You need {lackingAmnt} more!");
                 return;
@@ -101,7 +101,7 @@ namespace CookieClicker
             }
             return 0;
         }
-        
+
     }
     class Farm : IBuyShop, ICheckQuant, ICheckCost, IGenMultiplier
     {
@@ -200,7 +200,7 @@ namespace CookieClicker
         }
         public int CookieMultiplier()
         {
-     
+
             return 0;
         }
     }
@@ -221,7 +221,7 @@ namespace CookieClicker
             return;
         }
     }
-    
+
     class CheckHelperCost
     {
         public void getHelperCost()
@@ -247,263 +247,268 @@ namespace CookieClicker
         }
 
     }
-    class GenerateCookie 
+
+    class GenerateCookie
     {
-        float minCookieGen = 1.5F;
         public void CreateCookie()
         {
-
             Console.Clear();
+            int playerGenerateMin = 1;
+            CookieData.CurrCke = CookieData.CurrCke + playerGenerateMin;
 
-            float currentCookie = CookieData.CurrCke;
-            float newCurrentCookie;
-           
-            newCurrentCookie = currentCookie + minCookieGen;
-            CookieData.CurrCke = newCurrentCookie;
-            if (incremGrandma() >= 1)
-            {
-                newCurrentCookie = incremGrandma() + newCurrentCookie;
-                CookieData.CurrCke = newCurrentCookie;
-            }
+            float cookiesProduced = collectProduce();
+            CookieData.CurrCke = CookieData.CurrCke + cookiesProduced;
+            dispProducedCookie();
 
-            // have farm, 3 cookies
-            if (incremFarm() >= 1)
+            void dispProducedCookie()
             {
-                newCurrentCookie = incremFarm() + newCurrentCookie;
-                CookieData.CurrCke = newCurrentCookie;
-
-            }
-            if (incremMines() >= 1)
-            {
-                newCurrentCookie = incremMines() + newCurrentCookie;
-                CookieData.CurrCke = newCurrentCookie;
-
-            }
-            Console.WriteLine($"Current total of Cookie: {CookieData.CurrCke}");
-            Console.WriteLine($"Cookies generated from Helpers: {incremGrandma() + incremFarm() + incremMines()}");
-        }
-        public float incremGrandma()
-        {
-            Grandma grma = new Grandma();
-            float incremCookie;
-            if (grma.CheckQuant() <= 0)
-            {
-                return 0;
-            }
-            incremCookie = grma.CheckQuant() * grma.MinCookieGen;
-            return incremCookie;
-
-        }
-        public float incremFarm()
-        {
-            Farm farm = new Farm();
-            float incremCookie;
-            if (farm.CheckQuant() <= 0)
-            {
-                return 0;
-            }
-            incremCookie = farm.CheckQuant() * farm.MinCookieGen;
-            return incremCookie;
-        }
-        public float incremMines()
-        {
-            Mines mines = new Mines();
-            float incremCookie;
-            if (mines.CheckQuant() <= 0)
-            {
-                return 0;
-            }
-            incremCookie = mines.CheckQuant() * mines.MinCookieGen;
-            return incremCookie;
-        }
-    }
-
-    class CanBuyHelper
-    {
-
-        float currentCookie;
-        
-        public void CheckCanBuy()
-        {
-            canBuyGrandma();
-            canBuyFarm();
-            canBuyMines();
-        }
-        private void canBuyGrandma()
-        {
-            Grandma grma = new Grandma();
-            currentCookie = CookieData.CurrCke;
-            if (grma.CheckCost() <= currentCookie)
-            {
-                Console.WriteLine($"You have enough Cookies to buy a {grma.helperName}!");
+                string producedText = $"Helpers produces {cookiesProduced} cookies";
+                Console.WriteLine(producedText);
                 return;
             }
-        }
-        private void canBuyFarm()
-        {
-            Farm farm = new Farm();
-            currentCookie = CookieData.CurrCke;
-            if(farm.CheckCost() <= currentCookie){
-                Console.WriteLine($"You have enough Cookies to buy a {farm.helperName}!");
-                return;
-            }
-        }
-        private void canBuyMines()
-        {
-            Mines mines = new Mines();
-            currentCookie = CookieData.CurrCke;
-            if (mines.CheckCost() <= currentCookie)
+
+            float collectProduce()
             {
-                Console.WriteLine($"You have enough Cookies to buy a {mines.helperName}!");
-                return;
+                return CookieFromGrandma() + CookieFromFarm() + CookieFromMines();
             }
-        }
-    }
 
-
-    class CheckChoice
-    {
-        public void CheckChc(int choice, 
-            GameStat game_Stat, GenerateCookie gen_Cookie, 
-            Grandma grma, Farm farm, Mines mines, CheckHelperQuant checkHelp_Quant,
-            CheckHelperCost checkHelp_Cost)
-        {
-           
-            switch (choice)
+            float CookieFromGrandma()
             {
-                case 0:
-                    {
-                        game_Stat.StopGame();
-                        return;
-                    }
-                case 1:
-                    {
-                        gen_Cookie.CreateCookie();
-                        return;
-                    }
-                case 2:
-                    {
-                        checkHelp_Quant.getHelperQuant();
-                        return;
-                    }
-                case 3:
-                    {
-                        checkHelp_Cost.getHelperCost();
-                        return;
-                    }
-                case 4:
-                    {
-                        grma.BuyMethod();
-                        return;
-                    }
-                case 5:
-                    {
-                        farm.BuyMethod();
-                        return;
-                    }
-                case 6:
-                    {
-                        mines.BuyMethod();
-                        return;
-                    }
-                default:
-                    {
-                        Console.WriteLine("Incorrect command!");
-                        break;
-                    }
-               
-
-            }
-        }
-    }
-
-    public class GameStat
-    {
-        private bool isRunning;
-        public void StartGame()
-        {
-            GameProperties gameProp = new GameProperties();
-            isRunning = true;
-            Console.WriteLine($"{gameProp.gameTitle} is now running");
-        }
-        public void StopGame()
-        {
-            GameProperties gameProp = new GameProperties();
-            isRunning = false;
-            Check_Status();
-            Console.WriteLine($"{gameProp.gameTitle} is now stopped");
-        }
-        public bool Check_Status()
-        {
-            return isRunning;
-        }
-    }
-
-    class ReachGoal
-    {
-        public void goalReached()
-        {
-            int goalCookieAmnt = 1000000;
-            float currentCookie = CookieData.CurrCke;
-            if (currentCookie >= goalCookieAmnt)
-            {
-                Console.WriteLine("You have reached 1 million cookies! Congratulations!");
-                return;
-            }
-            return;
-        }
-    }
-
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            CheckChoice check_Choice = new CheckChoice();
-            GameStat game_Stat = new GameStat();
-            GenerateCookie gen_Cookie = new GenerateCookie();
-            Grandma grma = new Grandma();
-            Farm farm = new Farm();
-            Mines mines = new Mines();
-            CheckHelperQuant checkHelp_Quant = new CheckHelperQuant();
-            CheckHelperCost checkHelp_Cost = new CheckHelperCost();
-            MiscTexts miscTexts = new MiscTexts();
-            ReachGoal reachGoal = new ReachGoal();
-            CanBuyHelper canBuyHelper = new CanBuyHelper();
-
-
-            game_Stat.StartGame();
-
-
-            while (game_Stat.Check_Status())
-            {
-                Console.WriteLine(miscTexts.dispChoiceText());
-                int choice;
-                try
+                Grandma grma = new Grandma();
+                float grandmaProduce;
+                if (grma.CheckQuant() <= 0)
                 {
-                    choice = Convert.ToInt32(Console.ReadLine());
-                    check_Choice.CheckChc(choice, game_Stat, gen_Cookie, grma,
-                                          farm, mines, checkHelp_Quant, checkHelp_Cost);
-                    reachGoal.goalReached();
-                    canBuyHelper.CheckCanBuy();
+                    grandmaProduce = 0;
+                    return 0;
                 }
-                catch
+                if (grma.CheckQuant() >= 1)
                 {
-                    Console.WriteLine(miscTexts.dispErrorText());
+                    grandmaProduce = grma.CheckQuant() * grma.MinCookieGen;
+                    return grandmaProduce;
                 }
-        
-               
-                
+                return 0;
             }
+            float CookieFromFarm()
+            {
+                Farm farm = new Farm();
+                float farmProduce;
+                if (farm.CheckQuant() <= 0)
+                {
+                    return farmProduce = 0;
+                }
+                if (farm.CheckQuant() >= 1)
+                {
+                    farmProduce = farm.CheckQuant() * farm.MinCookieGen;
+                    return farmProduce;
+                }
+                return 0;
+            }
+            float CookieFromMines()
+            {
+                Mines mines = new Mines();
+                float minesProduce;
+                if (mines.CheckQuant() <= 0)
+                {
+                    return 0;
+                }
+                if (mines.CheckQuant() >= 1)
+                {
+                    minesProduce = mines.CheckQuant() * mines.MinCookieGen;
+                    return minesProduce;
+                }
+                return 0;
+            }
+        }
+
+        class CanBuyHelper
+        {
+
+            float currentCookie;
+
+            public void CheckCanBuy()
+            {
+                canBuyGrandma();
+                canBuyFarm();
+                canBuyMines();
+            }
+            private void canBuyGrandma()
+            {
+                Grandma grma = new Grandma();
+                currentCookie = CookieData.CurrCke;
+                if (grma.CheckCost() <= currentCookie)
+                {
+                    Console.WriteLine($"You have enough Cookies to buy a {grma.helperName}!");
+                    return;
+                }
+            }
+            private void canBuyFarm()
+            {
+                Farm farm = new Farm();
+                currentCookie = CookieData.CurrCke;
+                if (farm.CheckCost() <= currentCookie)
+                {
+                    Console.WriteLine($"You have enough Cookies to buy a {farm.helperName}!");
+                    return;
+                }
+            }
+            private void canBuyMines()
+            {
+                Mines mines = new Mines();
+                currentCookie = CookieData.CurrCke;
+                if (mines.CheckCost() <= currentCookie)
+                {
+                    Console.WriteLine($"You have enough Cookies to buy a {mines.helperName}!");
+                    return;
+                }
+            }
+        }
+
+
+        class CheckChoice
+        {
+            public void CheckChc(int choice,
+                GameStat game_Stat, GenerateCookie gen_Cookie,
+                Grandma grma, Farm farm, Mines mines, CheckHelperQuant checkHelp_Quant,
+                CheckHelperCost checkHelp_Cost)
+            {
+
+                switch (choice)
+                {
+                    case 0:
+                        {
+                            game_Stat.StopGame();
+                            return;
+                        }
+                    case 1:
+                        {
+                            gen_Cookie.CreateCookie();
+                            return;
+                        }
+                    case 2:
+                        {
+                            checkHelp_Quant.getHelperQuant();
+                            return;
+                        }
+                    case 3:
+                        {
+                            checkHelp_Cost.getHelperCost();
+                            return;
+                        }
+                    case 4:
+                        {
+                            grma.BuyMethod();
+                            return;
+                        }
+                    case 5:
+                        {
+                            farm.BuyMethod();
+                            return;
+                        }
+                    case 6:
+                        {
+                            mines.BuyMethod();
+                            return;
+                        }
+                    default:
+                        {
+                            Console.WriteLine("Incorrect command!");
+                            break;
+                        }
+
+
+                }
+            }
+        }
+
+        public class GameStat
+        {
+            private bool isRunning;
+            public void StartGame()
+            {
+                GameProperties gameProp = new GameProperties();
+                isRunning = true;
+                Console.WriteLine($"{gameProp.gameTitle} is now running");
+            }
+            public void StopGame()
+            {
+                GameProperties gameProp = new GameProperties();
+                isRunning = false;
+                Check_Status();
+                Console.WriteLine($"{gameProp.gameTitle} is now stopped");
+            }
+            public bool Check_Status()
+            {
+                return isRunning;
+            }
+        }
+
+        class ReachGoal
+        {
+            public void goalReached()
+            {
+                int goalCookieAmnt = 1000000;
+                float currentCookie = CookieData.CurrCke;
+                if (currentCookie >= goalCookieAmnt)
+                {
+                    Console.WriteLine("You have reached 1 million cookies! Congratulations!");
+                    return;
+                }
+                return;
+            }
+        }
+
+        class Program
+        {
+            static void Main(string[] args)
+            {
+                CheckChoice check_Choice = new CheckChoice();
+                GameStat game_Stat = new GameStat();
+                GenerateCookie gen_Cookie = new GenerateCookie();
+                Grandma grma = new Grandma();
+                Farm farm = new Farm();
+                Mines mines = new Mines();
+                CheckHelperQuant checkHelp_Quant = new CheckHelperQuant();
+                CheckHelperCost checkHelp_Cost = new CheckHelperCost();
+                MiscTexts miscTexts = new MiscTexts();
+                ReachGoal reachGoal = new ReachGoal();
+                CanBuyHelper canBuyHelper = new CanBuyHelper();
+
+
+                game_Stat.StartGame();
+
+
+                while (game_Stat.Check_Status())
+                {
+                    Console.WriteLine(miscTexts.dispChoiceText());
+                    int choice;
+                    try
+                    {
+                        choice = Convert.ToInt32(Console.ReadLine());
+                        check_Choice.CheckChc(choice, game_Stat, gen_Cookie, grma,
+                                              farm, mines, checkHelp_Quant, checkHelp_Cost);
+                        reachGoal.goalReached();
+                        canBuyHelper.CheckCanBuy();
+                    }
+                    catch
+                    {
+                        Console.WriteLine(miscTexts.dispErrorText());
+                    }
 
 
 
+                }
+
+
+
+            }
         }
     }
+}
 
 
         
 
-    }
+    
 
         
     
